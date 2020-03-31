@@ -5,6 +5,16 @@ function init()
     pen=canvas.getContext('2d');
     cs=66;
     game_over=false;
+    score=5;
+
+    //Image object for fruit
+    food_img=new Image();
+    food_img.src="apple.png";
+
+    trophy=new Image();
+    trophy.src="trophy.png";
+
+
     food=getRandomFood();
 
     snake={
@@ -29,13 +39,23 @@ function init()
         },
 
         updateSnake:function(){
-            console.log("updating snake accordingly");
+        //    console.log("updating snake accordingly");
 
-            this.cells.pop(); 
+           
             var headX=this.cells[0].x;
             var headY=this.cells[0].y;
-            
-			var nextX,nextY;       
+            if(headX==food.x && headY==food.y)
+            {
+                console.log("food eaten");
+                food=getRandomFood();
+                score++;
+            }
+            else      
+            {
+                this.cells.pop(); 
+        1   }
+
+            var nextX,nextY;       
 
             if(this.direction=="right")
             {
@@ -63,9 +83,14 @@ function init()
            // var X=headX+1;
            // var Y=headY;
             this.cells.unshift({x:nextX,y:nextY});
+            //Write a logic to prevent snake from going out
             var last_x = Math.round(W/cs);
 			var last_y = Math.round(H/cs);
-
+            
+            if(this.cells[0].y<0 || this.cells[0].x<0 ||this.cells[0].x>last_x || this.cells[0].y>last_y)
+            {
+                game_over=true;
+            }
             
 
         }
@@ -76,16 +101,16 @@ function init()
     
     function keyPressed(e){
         if(e.key=="ArrowRight"){
-            snake.direction=="right";
+            snake.direction="right";
         }
         else if(e.key=="ArrowLeft"){
-            snake.direction=="left";
+            snake.direction="left";
         }
         else if(e.key=="ArrowDown"){
-            snake.direction=="down";
+            snake.direction="down";
         }
         else {
-            snake.direction=="up";
+            snake.direction="up";
         }
         console.log(snake.direction);
     }
@@ -96,7 +121,15 @@ function init()
 function draw(){
     pen.clearRect(0,0,W,H);
     snake.drawSnake(); 
-    pen.fillRect(food.x,food.y,cs,cs);
+
+    pen.fillStyle=food.color;
+    pen.drawImage(food_img,food.x*cs,food.y*cs,cs,cs);
+    
+    pen.drawImage(trophy,18,20,cs,cs);
+    pen.fillStyle="blue";
+    pen.font="20px Roboto";
+    pen.fillText(score,50,50);
+
 }
 
 function update(){
@@ -116,6 +149,12 @@ function getRandomFood(){
 }
 
 function gameloop(){
+    if(game_over==true)
+    {
+        clearInterval(f);
+        alert("Game Over");
+        return;
+    }
     draw();
     update();
 }
