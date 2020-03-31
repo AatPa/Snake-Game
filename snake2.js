@@ -9,10 +9,10 @@ function init()
 
     //Image object for fruit
     food_img=new Image();
-    food_img.src="apple.png";
+    food_img.src="Assets/pple.png";
 
     trophy=new Image();
-    trophy.src="trophy.png";
+    trophy.src="Assets/trophy.png";
 
 
     food=getRandomFood();
